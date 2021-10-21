@@ -2,7 +2,6 @@
 
 ## Задание №1 - Подготовка рабочей среды
 
-
   - Terraform: 
   - ![Terraform](img/tf.png)
   - Bash: 
