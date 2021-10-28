@@ -20,6 +20,12 @@ origin  git@github.com:iExad/netology-hw.git (fetch)
 origin  git@github.com:iExad/netology-hw.git (push)
 ```
 
+## Задание №2 – Теги
+
+Создан Легковесный тег v0.0 
+
+Создан аннотированный тег v0.1
+
 
 
 
