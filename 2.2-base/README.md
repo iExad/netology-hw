@@ -26,6 +26,7 @@ origin  git@github.com:iExad/netology-hw.git (push)
 
 Создан аннотированный тег v0.1
 
+Коммиты запушены на все апстримы
 
 
 
