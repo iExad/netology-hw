@@ -32,6 +32,9 @@ origin  git@github.com:iExad/netology-hw.git (push)
 
 Пробую изменить файл README.md
 
+В логе тут же не обновилось. но коммиты и пуш сработал. в принципе как и раньше
+
+
 
 Add lines
 
