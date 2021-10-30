@@ -28,6 +28,7 @@ origin  git@github.com:iExad/netology-hw.git (push)
 
 Коммиты запушены на все апстримы
 
+## Задание №4 – Упрощаем себе жизнь
 
 
 Add lines
