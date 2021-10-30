@@ -30,6 +30,8 @@ origin  git@github.com:iExad/netology-hw.git (push)
 
 ## Задание №4 – Упрощаем себе жизнь
 
+Пробую изменить файл README.md
+
 
 Add lines
 
