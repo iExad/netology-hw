@@ -5,9 +5,9 @@
 
 2.1. [✔️] [Системы контроля версий](2.1-vcs/README.md)
 
-2.2. [❓] [Основы Git](2.2-base/README.md)
+2.2. [✔] [Основы Git](2.2-base/README.md)
 
-
+2.3. [❓] [Ветвления в Git](2.3-branching/README.md)
 
 
 
