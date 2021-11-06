@@ -7,9 +7,9 @@
 
 2.2. [✔] [Основы Git](2.2-base/README.md)
 
-2.3. [❓] [Ветвления в Git](2.3-branching/README.md)
+2.3. [✔] [Ветвления в Git](2.3-branching/README.md)
 
-
+2.4. [✔] [Инструменты Git](2.4-git-tools/README.md)
 
 
 
