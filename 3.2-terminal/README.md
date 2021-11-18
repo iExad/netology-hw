@@ -8,7 +8,13 @@
 
 4. ```ls /some_dir 2> </адрес/другого/терминала>```
 
-5. Например ```cat /file | wc -l > /file2```
+5. Например: 
+```
+echo 'test' > file
+wc -l < file > outfile
+cat outfile
+1
+```
 
 6. Аналогично ```ls /some_dir 2> </адрес/другого/терминала>```
 
