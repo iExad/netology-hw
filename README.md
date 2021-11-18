@@ -11,7 +11,9 @@
 
 2.4. [✔] [Инструменты Git](2.4-git-tools/README.md)
 
+3.1. [❓] [Работа в терминале 1](3.1-terminal/README.md)
 
+3.2. [❓] [Работа в терминале 2](3.2-terminal/README.md)
 
 
 
