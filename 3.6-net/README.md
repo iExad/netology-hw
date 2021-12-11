@@ -7,9 +7,10 @@
 ![](images/1.png)
 ![](images/2.png)
  
-3. 
+3.
 
-```curl ifconfig.me                                                                                             148 ↵
+```
+curl ifconfig.me
 85.140.2.247
 ```
 
@@ -39,7 +40,7 @@ source:         RIPE
 5. 
 
 ```
-traceroute -An 8.8.8.8                                                                                        130 ↵
+traceroute -An 8.8.8.8
 traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
  1  172.19.240.1 [*]  0.476 ms  0.363 ms  0.326 ms
  2  192.168.8.1 [*]  1.023 ms  1.349 ms  0.941 ms
@@ -138,7 +139,7 @@ dns.google.             0       IN      A       8.8.4.4
 8.
 
 ```
-dig -x 8.8.8.8                                                                                                130 ↵
+dig -x 8.8.8.8
 
 ; <<>> DiG 9.16.1-Ubuntu <<>> -x 8.8.8.8
 ;; global options: +cmd
