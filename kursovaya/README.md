@@ -215,7 +215,7 @@ sudo systemctl start nginx
 
 скрин сайта с информацией о сертификате
 
-![Site with cert info](nginx-welcome-page2.png)
+![Site with cert info](img/nginx-welcome-page2.png)
 
 9. Создайте скрипт, который будет генерировать новый сертификат в vault:
 
