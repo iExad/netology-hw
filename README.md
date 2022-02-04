@@ -31,9 +31,9 @@
 
 4.1. [✔] [Командная оболочка Bash: практические навыки](4.1-bash/README.md)
 
-4.2. [❓] [Использование Python для решения типовых DevOps задач](4.2-python/README.md)
+4.2. [✔] [Использование Python для решения типовых DevOps задач](4.2-python/README.md)
 
-4.3. [❓] [Языки разметки JSON и YAML](4.3-json-yaml/README.md)
+4.3. [✔] [Языки разметки JSON и YAML](4.3-json-yaml/README.md)
 
-
+[❓] Курсовая работа
 ps. copypaste ✔️❓ ⭐ ❌
