@@ -18,17 +18,10 @@ Logging: on (low)
 Default: deny (incoming), allow (outgoing), disabled (routed)
 New profiles: skip
 
-root@devsys-pdc-2:~# ufw app list
-Available applications:
-  OpenSSH
+ufw allow ssh
+ufw allow https
+ufw allow from 127.0.0.1
 
-root@devsys-pdc-2:~# ufw app info 'OpenSSH'
-Profile: OpenSSH
-Title: Secure shell server, an rshd replacement
-Description: OpenSSH is a free implementation of the Secure Shell protocol.
-
-Port:
-  22/tcp
 ```
 
 3. Установлен `vault`
