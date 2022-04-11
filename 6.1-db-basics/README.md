@@ -28,19 +28,19 @@
 
 - Данные записываются на все узлы с задержкой до часа (асинхронная запись)
 
-  CAP: Availability
-
-  PACELC: PA/EL
-
-- При сетевых сбоях, система может разделиться на 2 раздельных кластера
-
-  CAP: Partitions Tolerance
+  CAP:  CA - Partitions Tolerance
 
   PACELC: PC/EL
 
+- При сетевых сбоях, система может разделиться на 2 раздельных кластера
+
+  CAP:  AP - Consistency
+
+  PACELC: PA/EL
+
 - Система может не прислать корректный ответ или сбросить соединение
 
-  CAP: Consistency
+  CAP:  CP - Availability
 
   PACELC: PC/EC
 
