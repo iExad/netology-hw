@@ -31,7 +31,7 @@ cluster.name: my-elasticsearch-cluster
 # Path to directory where to store the data (separate multiple locations by comma):
 #
 path.data: /var/lib/elasticsearch
-path.repo: /opt/elasticsearch-7.16.2/snapshots
+path.repo: /opt/elasticsearch-7.17.4/snapshots
 #
 # Path to log files:
 #

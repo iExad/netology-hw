@@ -45,9 +45,7 @@ WORKDIR /tmp
 RUN yum update -y && \
     yum install wget perl-Digest-SHA -y && \
     yum clean all -y && \
-    wget -q -O elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz && \
-    wget -q -O elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz.sha512 https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz.sha512 && \
-    shasum -a 512 -c elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz.sha512 && \
+    wget https://fossies.org/linux/www/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz && \
     tar -xzf elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz -C /opt/ && \
     rm -rf /tmp/elasticsearch-${ES_VERSION}-* && \
     groupadd -g 1000 elasticsearch && \
@@ -66,19 +64,21 @@ ENTRYPOINT ["./bin/elasticsearch"]
 ```
 Сборка образа
 ```bash
-# docker build --build-arg ES_VERSION=7.16.2 -t kamaok/elasticsearch-netology .
+# docker build --build-arg ES_VERSION=7.14.4 -t iexad/elasticsearch-netology .
 ```
 Загрузка образа в docker-хранилище
 ```bash
-# docker push kamaok/elasticsearch-netology
+# docker push iexad/elasticsearch-netology
 ```
-https://hub.docker.com/repository/docker/kamaok/elasticsearch-netology
+https://hub.docker.com/repository/docker/iexad/elasticsearch-netology
 
 Конфигурационный файл elasticsearch имеет вид
+
 ```bash
 # grep -vE '^$|^#' elasticsearch.yml
 cluster.name: my-elasticsearch-cluster
 path.data: /var/lib/elasticsearch
+path.repo: /opt/elasticsearch-7.14.4/snapshots
 bootstrap.memory_lock: true
 network.host: 0.0.0.0
 http.port: 9200
@@ -86,13 +86,14 @@ discovery.type: single-node
 ```
 
 Создаем каталог на хосте, который будет использоваться в качестве тома для хранения данных elastcisearch внутри контейнера, выставляем на него владелец/группу uid/gid которых соответствует uid/gid elasticsearch пользователя внутри контейнера
+
 ```bash
 # mkdir -p .data/elasticsearch; chown -R 1000:1000 .data/elasticsearch
 ```
 
 В логха elasticsearch контенйера при первом его запуске
 ```bash
-[2021-12-27T10:13:28,503][WARN ][o.e.b.BootstrapChecks    ] [netology_test] max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+[2022-06-06T00:13:28,503][WARN ][o.e.b.BootstrapChecks    ] [netology_test] max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
 ```
 Устанавливаем на хосте требуемое значение для переменной ядра vm.max_map_count
 ```bash
@@ -110,10 +111,11 @@ vm.max_map_count = 262144
        --name myelastic \
        -d -it \
        --ulimit memlock=-1:-1 \
-       -p 127.0.0.1:9200:9200 \
+       -p 9200:9200 \
        -v $PWD/.data/elasticsearch:/var/lib/elasticsearch \
-       -v $PWD/elasticsearch.yml:/opt/elasticsearch-${ES_VERSION}/config/elasticsearch.yml \
-      kamaok/elasticsearch-netology \
+       -v $PWD/elasticsearch.yml:/opt/elasticsearch-7.14.4/config/elasticsearch.yml \
+      iexad/elasticsearch-netology:7 \
+      -Ehttp.host=0.0.0.0 \
       -Enode.name=netology_test
 ```
 
@@ -121,16 +123,16 @@ vm.max_map_count = 262144
 # curl localhost:9200
 {
   "name" : "netology_test",
-  "cluster_name" : "my-elasticsearch-cluster",
-  "cluster_uuid" : "alj2aW49Sy-tEXbcLw5OXg",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "bGgkxRJ-RWWTDpj1WF_B4Q",
   "version" : {
-    "number" : "7.16.2",
+    "number" : "7.17.4",
     "build_flavor" : "default",
     "build_type" : "tar",
-    "build_hash" : "2b937c44140b6559905130a8650c64dbd0879cfb",
-    "build_date" : "2021-12-18T19:42:46.604893745Z",
+    "build_hash" : "79878662c54c886ae89206c685d9f1051a9d6411",
+    "build_date" : "2022-05-18T18:04:20.964345128Z",
     "build_snapshot" : false,
-    "lucene_version" : "8.10.1",
+    "lucene_version" : "8.11.1",
     "minimum_wire_compatibility_version" : "6.8.0",
     "minimum_index_compatibility_version" : "6.0.0-beta1"
   },
@@ -187,16 +189,16 @@ curl -X PUT --url localhost:9200/ind-3 -H 'content-type: application/json' -d '{
 Получите список индексов и их статусов, используя API и **приведите в ответе** на задание.
 ```bash
 # curl localhost:9200/_cat/indices
-green  open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
-green  open ind-1            Kvr8A2ccTzyTwJ2Kr1K0Tg 1 0  0 0   226b   226b
-yellow open ind-3            s2zUPqezQemW3sLqlcFeww 4 2  0 0   904b   904b
-yellow open ind-2            L1D7pYVSQ9WFyjSAbZuLBg 2 1  0 0   452b   452b
+green  open .geoip_databases zC9j0EWdRbinO5qZyVfH1A 1 0 40 0 38.2mb 38.2mb
+green  open ind-1            DllyUCOUSZOHMS7cl3DZhQ 1 0  0 0   226b   226b
+yellow open ind-3            GmkCF3AySGar5lfeAoJtwA 4 2  0 0   604b   604b
+yellow open ind-2            gvFYk8etSKmzSAhjqhTXWA 2 1  0 0   452b   452b
 ```
 Получите состояние кластера `elasticsearch`, используя API.
 ```bash
 # curl localhost:9200/_cluster/health?pretty
 {
-  "cluster_name" : "my-elasticsearch-cluster",
+  "cluster_name" : "elasticsearch",
   "status" : "yellow",
   "timed_out" : false,
   "number_of_nodes" : 1,
@@ -220,7 +222,7 @@ yellow open ind-2            L1D7pYVSQ9WFyjSAbZuLBg 2 1  0 0   452b   452b
 
 Состояние кластера определяется на основании состояния его шардов
 
-Присутствуют secondary шарды в состоянии unassigned т.к мы создавали втрой и третий индексы с репликацией
+Присутствуют secondary шарды в состоянии unassigned т.к мы создавали второй и третий индексы с репликацией
 
 При этом нода в кластере одна и соответственно шарды индексов не реплицируются на другие ноды
 
@@ -231,7 +233,7 @@ yellow open ind-2            L1D7pYVSQ9WFyjSAbZuLBg 2 1  0 0   452b   452b
 ```
 ```bash
 # curl localhost:9200/_cat/indices
-green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
+green open .geoip_databases zC9j0EWdRbinO5qZyVfH1A 1 0 40 0 38.2mb 38.2mb
 ```
 
 ## Задача 3
@@ -247,11 +249,11 @@ green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
 
 **Приведите в ответе** запрос API и результат вызова API для создания репозитория.
 
-Указваем расположение репозитария на файловой системе внутри контейнера
+Указываем расположение репозитория на файловой системе внутри контейнера
 
 ```bash
 # grep 'path.repo' elasticsearch.yml
-path.repo: /opt/elasticsearch-7.16.2/snapshots
+path.repo: /opt/elasticsearch-7.17.4/snapshots
 ```
 
 Рестарт docker-контейнер с elasticsearch для применения сделанной выше настройки
@@ -272,7 +274,7 @@ path.repo: /opt/elasticsearch-7.16.2/snapshots
 Просмотр списка всех зарегистрированных репозитариев для хранения снепшотов
 ```bash
 # curl localhost:9200/_snapshot
-{"netology_backup":{"type":"fs","uuid":"4WjXF362QLy_V1QAGt1lPQ","settings":{"compress":"true","location":"snapshots"}}}
+{"netology_backup":{"type":"fs","settings":{"compress":"true","location":"snapshots"}}}}
 ```
 
 Создайте индекс `test` с 0 реплик и 1 шардом и **приведите в ответе** список индексов.
@@ -288,8 +290,8 @@ path.repo: /opt/elasticsearch-7.16.2/snapshots
 ```
 ```bash
 # curl localhost:9200/_cat/indices
-green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
-green open test             aGc3pgfbQFqPtEhD7-OghQ 1 0  0 0   226b   226b
+green open .geoip_databases vD2JYBCgSeiHcYj3PYlGjg 1 0 40 0 38.2mb 38.2mb
+green open test             WgoXOTDcTaqAKfj5PNs8EQ 1 0  0 0   226b   226b
 ```
 
 [Создайте `snapshot`](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-take-snapshot.html)
@@ -298,21 +300,21 @@ green open test             aGc3pgfbQFqPtEhD7-OghQ 1 0  0 0   226b   226b
 **Приведите в ответе** список файлов в директории со `snapshot`ами.
 ```bash
 # curl -X PUT --url localhost:9200/_snapshot/netology_backup/my_snapshot?wait_for_completion=true
-{"snapshot":{"snapshot":"my_snapshot","uuid":"tZ-DkErETSCRJx3AKOPeHg","repository":"netology_backup","version_id":7160299,"version":"7.16.2","indices":[".ds-ilm-history-5-2021.12.27-000001",".ds-.logs-deprecation.elasticsearch-default-2021.12.27-000001","test",".geoip_databases"],"data_streams":["ilm-history-5",".logs-deprecation.elasticsearch-default"],"include_global_state":true,"state":"SUCCESS","start_time":"2021-12-27T12:55:48.257Z","start_time_in_millis":1640609748257,"end_time":"2021-12-27T12:55:49.458Z","end_time_in_millis":1640609749458,"duration_in_millis":1201,"failures":[],"shards":{"total":4,"failed":0,"successful":4},"feature_states":[{"feature_name":"geoip","indices":[".geoip_databases"]}]}}
+{"snapshot":{"snapshot":"my_snapshot","uuid":"lIuWGxIUTySu4f-Ux8nJJg","repository":"netology_backup","version_id":7170499,"version":"7.17.4","indices":["test",".ds-ilm-history-5-2022.06.06-000001",".geoip_databases",".ds-.logs-deprecation.elasticsearch-default-2022.06.06-000001"],"data_streams":["ilm-history-5",".logs-deprecation.elasticsearch-default"],"include_global_state":true,"state":"SUCCESS","start_time":"2022-06-06T23:24:43.364Z","start_time_in_millis":1654557883364,"end_time":"2022-06-06T23:24:44.836Z","end_time_in_millis":1654557884836,"duration_in_millis":1472,"failures":[],"shards":{"total":4,"failed":0,"successful":4},"feature_states":[{"feature_name":"geoip","indices":[".geoip_databases"]}]}}
 ```
 ```bash
-# docker exec myelastic ls -l /opt/elasticsearch-7.16.2/snapshots/snapshots
+# docker exec myelastic ls -l /opt/elasticsearch-7.17.4/snapshots/snapshots
 total 28
--rw-r--r-- 1 elasticsearch elasticsearch 1423 Dec 27 12:55 index-0
--rw-r--r-- 1 elasticsearch elasticsearch    8 Dec 27 12:55 index.latest
-drwxr-xr-x 6 elasticsearch elasticsearch 4096 Dec 27 12:55 indices
--rw-r--r-- 1 elasticsearch elasticsearch 9712 Dec 27 12:55 meta-tZ-DkErETSCRJx3AKOPeHg.dat
--rw-r--r-- 1 elasticsearch elasticsearch  453 Dec 27 12:55 snap-tZ-DkErETSCRJx3AKOPeHg.dat
+-rw-r--r-- 1 elasticsearch elasticsearch 1423 Jun  6 23:24 index-0
+-rw-r--r-- 1 elasticsearch elasticsearch    8 Jun  6 23:24 index.latest
+drwxr-xr-x 6 elasticsearch elasticsearch 4096 Jun  6 23:24 indices
+-rw-r--r-- 1 elasticsearch elasticsearch 9741 Jun  6 23:24 meta-lIuWGxIUTySu4f-Ux8nJJg.dat
+-rw-r--r-- 1 elasticsearch elasticsearch  457 Jun  6 23:24 snap-lIuWGxIUTySu4f-Ux8nJJg.dat
 ```
-Список снепшотов в конкретном репозитарии
+Список снепшотов в конкретном репозитории
 ```bash
 # curl localhost:9200/_snapshot/netology_backup/*?verbose=false
-{"snapshots":[{"snapshot":"my_snapshot","uuid":"tZ-DkErETSCRJx3AKOPeHg","repository":"netology_backup","indices":[".ds-.logs-deprecation.elasticsearch-default-2021.12.27-000001",".ds-ilm-history-5-2021.12.27-000001",".geoip_databases","test"],"data_streams":[],"state":"SUCCESS"}],"total":1,"remaining":0}
+{"snapshots":[{"snapshot":"my_snapshot","uuid":"lIuWGxIUTySu4f-Ux8nJJg","repository":"netology_backup","indices":[".ds-.logs-deprecation.elasticsearch-default-2022.06.06-000001",".ds-ilm-history-5-2022.06.06-000001",".geoip_databases","test"],"data_streams":[],"state":"SUCCESS"}],"total":1,"remaining":0}
 ```
 
 Удалите индекс `test` и создайте индекс `test-2`. **Приведите в ответе** список индексов.
@@ -322,7 +324,7 @@ drwxr-xr-x 6 elasticsearch elasticsearch 4096 Dec 27 12:55 indices
 ```
 ```bash
 # curl localhost:9200/_cat/indices
-green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
+green open .geoip_databases vD2JYBCgSeiHcYj3PYlGjg 1 0 40 0 38.2mb 38.2mb
 ```
 ```bash
 # curl -X PUT --url localhost:9200/test-2 -H 'content-type: application/json' -d '{
@@ -336,8 +338,8 @@ green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
 ```
 ```bash
 # curl localhost:9200/_cat/indices
-green open test-2           aLK5eSekRb6XtTBIhXTbwg 1 0  0 0   226b   226b
-green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
+green open test-2           yFoaGP4IQJSm2I1M5WQo1g 1 0  0 0   226b   226b
+green open .geoip_databases vD2JYBCgSeiHcYj3PYlGjg 1 0 40 0 38.2mb 38.2mb
 ```
 [Восстановите](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-restore-snapshot.html) состояние
 кластера `elasticsearch` из `snapshot`, созданного ранее.
@@ -347,23 +349,23 @@ green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
 # curl -X POST localhost:9200/_snapshot/netology_backup/my_snapshot/_restore -H 'Content-Type: application/json' -d '{
     "include_global_state": true
 }'
-{"error":{"root_cause":[{"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/tZ-DkErETSCRJx3AKOPeHg] cannot restore index [.ds-ilm-history-5-2021.12.27-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"}],"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/tZ-DkErETSCRJx3AKOPeHg] cannot restore index [.ds-ilm-history-5-2021.12.27-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"},"status":500}
+{"error":{"root_cause":[{"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/lIuWGxIUTySu4f-Ux8nJJg] cannot restore index [.ds-.logs-deprecation.elasticsearch-default-2022.06.06-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"}],"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/lIuWGxIUTySu4f-Ux8nJJg] cannot restore index [.ds-.logs-deprecation.elasticsearch-default-2022.06.06-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"},"status":500}
 ```
 
-Закрываем индекс `.ds-ilm-history-5-2021.12.27-000001`
+Закрываем индекс `.ds-.logs-deprecation.elasticsearch-default-2022.06.06-000001`
 ```bash
-# curl -X POST localhost:9200/.ds-ilm-history-5-2021.12.27-000001/_close -H 'content-type: application/json'
+# curl -X POST localhost:9200/.ds-.logs-deprecation.elasticsearch-default-2022.06.06-000001/_close -H 'content-type: application/json'
 ```
 ```bash
 # curl -X POST localhost:9200/_snapshot/netology_backup/my_snapshot/_restore -H 'Content-Type: application/json' -d '{
     "include_global_state": true
 }'
-{"error":{"root_cause":[{"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/tZ-DkErETSCRJx3AKOPeHg] cannot restore index [.ds-.logs-deprecation.elasticsearch-default-2021.12.27-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"}],"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/tZ-DkErETSCRJx3AKOPeHg] cannot restore index [.ds-.logs-deprecation.elasticsearch-default-2021.12.27-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"},"status":500}
+{{"error":{"root_cause":[{"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/lIuWGxIUTySu4f-Ux8nJJg] cannot restore index [.ds-ilm-history-5-2022.06.06-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"}],"type":"snapshot_restore_exception","reason":"[netology_backup:my_snapshot/lIuWGxIUTySu4f-Ux8nJJg] cannot restore index [.ds-ilm-history-5-2022.06.06-000001] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"},"status":500}
 ```
 
-Закрываем индекс `.ds-.logs-deprecation.elasticsearch-default-2021.12.27-000001`
+Закрываем индекс `.ds-ilm-history-5-2022.06.06-000001`
 ```bash
-# curl -X POST localhost:9200/.ds-.logs-deprecation.elasticsearch-default-2021.12.27-000001/_close -H 'content-type: application/json'
+# curl -X POST localhost:9200/.ds-ilm-history-5-2022.06.06-000001/_close -H 'content-type: application/json'
 ```
 ```bash
 # curl -X POST localhost:9200/_snapshot/netology_backup/my_snapshot/_restore -H 'Content-Type: application/json' -d '{
@@ -373,7 +375,7 @@ green open .geoip_databases MFEV2i0uR4eHt5-GeePDow 1 0 43 0 40.8mb 40.8mb
 ```
 ```bash
 # curl localhost:9200/_cat/indices
-green open test-2           aLK5eSekRb6XtTBIhXTbwg 1 0  0 0   226b   226b
-green open .geoip_databases 3mg_f1H5SNmYBDpyWj3brg 1 0 43 0 40.8mb 40.8mb
-green open test             nzYB16BHRiK3EQ-abDRMpg 1 0  0 0   226b   226b
+green open test-2           yFoaGP4IQJSm2I1M5WQo1g 1 0  0 0   226b   226b
+green open .geoip_databases EmPnF2I0SOCsnMdZ-NZVRw 1 0 40 0 38.2mb 38.2mb
+green open test             VjfTHcv6RCK33Rp94wTQ3Q 1 0  0 0   226b   226b
 ```
