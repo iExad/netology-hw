@@ -68,9 +68,9 @@ ENTRYPOINT ["./bin/elasticsearch"]
 ```
 Загрузка образа в docker-хранилище
 ```bash
-# docker push iexad/elasticsearch-netology
+# docker push iexad/elasticsearch-netology:7
 ```
-https://hub.docker.com/repository/docker/iexad/elasticsearch-netology
+https://hub.docker.com/repository/docker/iexad/elasticsearch-netology:7
 
 Конфигурационный файл elasticsearch имеет вид
 
