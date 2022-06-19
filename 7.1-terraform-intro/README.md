@@ -111,10 +111,10 @@ on linux_amd64
 или виртуальной машине.
 
 ```bash
-$ wget -O /tmp/terraform.zip  https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip && \
-$ sudo unzip /tmp/terraform.zip -d /usr/local/bin/ && \
-$ sudo chmod +x /usr/local/bin/terraform && \
-$ sudo mv /usr/local/bin/terraform /usr/local/bin/terraform-0.12 && \
+$ wget -O /tmp/terraform.zip  https://releases.hashicorp.com/terraform/0.12.31/terraform_0.12.31_linux_amd64.zip 
+$ sudo unzip /tmp/terraform.zip -d /usr/local/bin/ 
+$ sudo chmod +x /usr/local/bin/terraform 
+$ sudo mv /usr/local/bin/terraform /usr/local/bin/terraform-0.12 
 $ rm /tmp/terraform.zip
 ```
 
