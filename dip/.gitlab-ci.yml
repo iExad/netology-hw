@@ -1,0 +1,13 @@
+stages:
+  - deploy
+
+deploy-job:
+  stage: deploy
+  script:
+    - if [ "$CI_COMMIT_TAG" = "" ] ; then echo "Tag is absent";
+      else 
+        ssh -o StrictHostKeyChecking=no ubuntu@app.jdmkzn.ru sudo chown ubuntu /var/www/jdmkzn.ru -R;
+        scp -q -o StrictHostKeyChecking=no -r $CI_PROJECT_DIR/* ubuntu@app.jdmkzn.ru:/var/www/jdmkzn.ru/;
+        ssh -o StrictHostKeyChecking=no ubuntu@app.jdmkzn.ru sudo chown www-data /var/www/jdmkzn.ru -R;
+      fi
+    - echo "Done"

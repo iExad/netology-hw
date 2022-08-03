@@ -1,0 +1,14 @@
+stages:          # List of stages for jobs, and their order of execution
+  - deploy
+
+deploy-job:      # This job runs in the deploy stage.
+  only:
+    - tags
+  stage: deploy  
+  script:
+    - echo "Deploying application..."
+    - git clone http://192.168.2.204/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}.git
+    - rsync --del -a -e "ssh -o StrictHostKeyChecking=no" wordpress vagrant@192.168.2.203:/var/www/
+    - rm -rf wordpress
+    - echo "Application successfully deployed."
+

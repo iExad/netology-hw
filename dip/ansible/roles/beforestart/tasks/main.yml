@@ -1,0 +1,42 @@
+---
+- name: Wait host starting
+  ansible.builtin.wait_for_connection:
+#          timeout: 200
+
+- name: Gather facts for first time
+  ansible.builtin.setup:
+
+- name: Update hosts www
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_nginx }} nginx www.{{ my_domain }}"
+
+- name: Update hosts db01
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_db01 }} db01 db01.{{ my_domain }}"
+
+- name: Update hosts db02
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_db02 }} db02 db02.{{ my_domain }}"
+
+- name: Update hosts app
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_app }} app app.{{ my_domain }}"
+
+- name: Update hosts gitlab
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_gitlab }} gitlab gitlab.{{ my_domain }}"
+
+- name: Update hosts runner
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_runner }} runner runner.{{ my_domain }}"
+
+- name: Update hosts monitoring
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ip_monitoring }} monitoring monitoring.{{ my_domain }}"
